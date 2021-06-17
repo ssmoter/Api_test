@@ -1,0 +1,111 @@
+﻿@page    "/UploadData"
+
+@using System.IO
+@using Microsoft.AspNetCore.Hosting
+@using Blazor_server_G.Models
+@using DataLibrary
+
+
+@inject IGarageData _dbGaraze
+@inject IWebHostEnvironment env
+@inject IDowloandSendApi _Api
+
+
+<div>
+        <div>
+            <EditForm Model="@newGarageModel" OnValidSubmit="@InsertGarage">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div>
+                    <InputText id="title" @bind-Value="newGarageModel.Title" />
+                    <br />
+                    @*<InputNumber id="price" @bind-Value="newGarageModel.Price" />*@
+                    <br />
+                </div>
+                @*<InputFile OnChange="onInput" multiple></InputFile>*@
+
+                <br />
+                <button type="submit">wyślij</button>
+
+            </EditForm>
+        </div>
+        <p>Status wysyłania : @status</p>
+        <div>
+
+        </div>
+
+        
+</div>
+
+
+
+
+@code{
+
+
+    private UploadFile upload=new();
+
+    private DisplayGarageModel newGarageModel = new DisplayGarageModel();
+
+    private PfotoGModel pfotoGModel = new PfotoGModel();
+
+    private string status;
+
+
+    //public void onInput(InputFileChangeEventArgs e)
+    //{
+    //    upload.OnInputFileChange(e);
+    //    StateHasChanged();
+    //}
+    //public async void SaveImage()
+    //{
+    //    List<GarageModel> g = await _dbGaraze.GetId();
+    //    if(g!=null)
+    //    {
+    //        upload.FolderPath = env.WebRootPath.ToString();
+    //        upload.FolderName = g[g.Count-1].Id.ToString();
+
+    //        pfotoGModel.GarazId = g[g.Count - 1].Id;
+    //        if (upload.SelectedFiles.Count >= 1)
+    //            pfotoGModel.Pfoto_1 = upload.SelectedFiles[0].Name;
+    //        if (upload.SelectedFiles.Count >= 2)
+    //            pfotoGModel.Pfoto_2 = upload.SelectedFiles[1].Name;
+    //        if (upload.SelectedFiles.Count >= 3)
+    //            pfotoGModel.Pfoto_3 = upload.SelectedFiles[2].Name;
+    //        if (upload.SelectedFiles.Count >= 4)
+    //            pfotoGModel.Pfoto_4 = upload.SelectedFiles[3].Name;
+    //        if (upload.SelectedFiles.Count >= 5)
+    //            pfotoGModel.Pfoto_5 = upload.SelectedFiles[4].Name;
+    //        if (upload.SelectedFiles.Count >= 6)
+    //            pfotoGModel.Pfoto_6 = upload.SelectedFiles[5].Name;
+
+
+    //        await _dbGaraze.InsertPfotoG(pfotoGModel);
+
+    //        upload.SaveImageTo();
+
+    //        StateHasChanged();
+
+
+    //    }
+    //}
+
+
+
+    private async Task InsertGarage()
+    {
+        GarageModel g = new GarageModel
+        {
+
+            Title = newGarageModel.Title,
+            //Price = newGarageModel.Price,
+            ReleaseDate = DateTime.Now
+        };
+        //await _dbGaraze.InsertGarage(g);
+
+        status = _Api.UploadGarageModel(g);
+
+        //SaveImage();
+
+    }
+}

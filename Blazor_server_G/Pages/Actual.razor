@@ -1,0 +1,113 @@
+﻿@page  "/all/{Id:int}"
+
+
+@using System.Threading
+@using DataLibrary
+
+@inject IGarageData _dbGaraze
+@inject IDowloandSendApi ApiGaraze
+
+<h1>Actual</h1>
+@if (garages != null)
+{
+    <div>
+        @*<div>
+            <button @onclick="@SubNrImage">Poprzedni</button>
+            <img src="@pfotos[0].AddFolderImage("Pictures", pfotos[0].GarazId.ToString(),Image[NrImage])" class="image-large-size" />
+            <button @onclick="@AddNrImage">Następny</button>
+        </div>*@
+        <div>
+
+            @*@for (NrImageInFor = 0; NrImageInFor < 5; NrImageInFor++)
+            {
+                <a @onclick="@NrImageEqualsNrFor">
+                    <img src="@pfotos[0].AddFolderImage("Pictures", pfotos[0].GarazId.ToString(), Image[NrImageInFor])" class="image-small-size" />
+                </a>
+            }*@
+
+        </div>
+    </div>
+    <div>
+        <h3>@garages.Title</h3>
+        <h3>@garages.Id</h3>
+    </div>
+    <div>
+        <button type="submit" @onclick="Delete">Usuń obiekt</button>
+        <p>Status usuwanego obiektu:@status</p>
+
+    </div>
+
+
+
+}
+else
+{
+    <h1>Loading</h1>
+}
+
+@code {
+
+    private GarageModel garages;
+    private List<PfotoGModel> pfotos;
+    [Parameter]
+    public int Id { get; set; }
+
+    private string[] Image { get; set; }
+    private int NrImage { get; set; } = 0;
+    private int NrImageInFor { get; set; }
+
+    private string status;
+
+    //private void AddNrImage()
+    //{
+    //    if (NrImage < 5)
+    //    {
+    //        NrImage++;
+    //    }
+    //    else
+    //    {
+    //        NrImage = 0;
+    //    }
+    //}
+    //private void SubNrImage()
+    //{
+    //    if (NrImage > 0)
+    //    {
+    //        NrImage--;
+    //    }
+    //    else
+    //    {
+    //        NrImage = 5;
+    //    }
+    //}
+    //private void NrImageEqualsNrFor()
+    //{
+    //    NrImage = NrImageInFor;
+    //}
+
+    private void Delete()
+    {
+        status = ApiGaraze.DeleteGarageModel(Id);
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        garages = await ApiGaraze.DowloandCorrectGarageModel(Id);
+        //pfotos = await _dbGaraze.GetCorrectPfoto(Id);
+
+        //if (pfotos != null)
+        //{
+        //    Image = new string[] {
+
+        //        pfotos[0].Pfoto_1,
+        //        pfotos[0].Pfoto_2,
+        //        pfotos[0].Pfoto_3,
+        //        pfotos[0].Pfoto_4,
+        //        pfotos[0].Pfoto_5,
+        //        pfotos[0].Pfoto_6,
+        //        };
+        //}
+
+    }
+}

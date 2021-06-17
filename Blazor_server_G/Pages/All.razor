@@ -1,0 +1,78 @@
+﻿@page "/all"
+
+@using System.Threading
+@using DataLibrary
+
+
+@inject IGarageData _dbGaraze
+
+@inject IDowloandSendApi ApiGaraze
+
+<h3>All</h3>
+<div>
+    @if (garages == null)
+    {
+        <p>
+            <em>Loading...</em>
+        </p>
+    }
+    else
+    {
+        <a>Ilość elementów W szeregu</a> 
+        <select id="Select1" @bind="@Ilosc_elementow">
+            <option value="50">2</option>
+            <option value="30">3</option>
+            <option value="25">4</option>
+            <option value="20">5</option>
+            <option value="16">6</option>
+
+        </select>
+
+
+        <div style="width:80%;">
+            @for (int i = 0; i < garages.Count; i++)
+            {
+            <div class="table-active table table-left" style="width:@Ilosc_elementow%;" >
+                 <a href="all/@garages[i].Id">
+                     
+                        @*@for (int j = 0; j < pfotos.Count; j++)
+                        {
+                            <div>
+                                @if (garages[i].Id == pfotos[j].GarazId)
+                                {
+                                    <img  src="@pfotos[j].AddFolderImage("Pictures", pfotos[j].GarazId.ToString(), pfotos[j].Pfoto_1)" class="table-image-size table-midle" />
+                                }
+                            </div>
+                        }*@
+                        <p class="table-midle">Tytuł: @garages[i].Title</p>
+                        <p class="table-midle"> Id: @garages[i].Id</p>
+                        <p class="table-midle"> Cena: @garages[i].Price</p>
+                     
+                    </a>
+            </div>
+
+            }
+        </div>
+
+    }
+
+</div>
+
+
+
+@code {
+    private List<GarageModel> garages;
+    private List<PfotoGModel> pfotos;
+    private static int Ilosc_elementow = 25;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        garages = await ApiGaraze.DowloandGarageModel();
+
+        //garages = await _dbGaraze.GetGarage();
+        //pfotos = await _dbGaraze.GetPfoto();
+
+    }
+
+}
