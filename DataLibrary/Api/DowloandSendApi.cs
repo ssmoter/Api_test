@@ -65,7 +65,7 @@ namespace DataLibrary
             {
                 using (var client = new HttpClient())
                 {
-                    var uri = new Uri(url+"/");
+                    var uri = new Uri(url + "/");
                     client.DefaultRequestHeaders.Accept.Clear();
                     var postTask = client.PostAsJsonAsync(uri, garage);
                     postTask.Wait();
@@ -104,7 +104,34 @@ namespace DataLibrary
             return "failed";
         }
 
+        public string PutGarageModel(int ID,GarageModel garage)
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var uri = new Uri(url + "/" + ID);
 
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    var PutTask = client.PutAsJsonAsync(uri, garage);
+                    PutTask.Wait();
+                    var result = PutTask.Result;
+                    if (result.IsSuccessStatusCode)
+                    {
+                        return result.StatusCode.ToString();
+                    }
+                    else
+                    {
+                        return "failed";
+                    }
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+
+                return ex.ToString();
+            }
+        }
 
     }
 }

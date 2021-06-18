@@ -9,5 +9,6 @@ namespace DataLibrary
         Task<List<GarageModel>> DowloandGarageModel();
         string UploadGarageModel(GarageModel garage);
         string DeleteGarageModel(int id);
+        string PutGarageModel(int ID, GarageModel garage);
     }
 }

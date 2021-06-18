@@ -12,33 +12,41 @@
 {
     <div>
         @*<div>
-            <button @onclick="@SubNrImage">Poprzedni</button>
-            <img src="@pfotos[0].AddFolderImage("Pictures", pfotos[0].GarazId.ToString(),Image[NrImage])" class="image-large-size" />
-            <button @onclick="@AddNrImage">Następny</button>
-        </div>*@
+                <button @onclick="@SubNrImage">Poprzedni</button>
+                <img src="@pfotos[0].AddFolderImage("Pictures", pfotos[0].GarazId.ToString(),Image[NrImage])" class="image-large-size" />
+                <button @onclick="@AddNrImage">Następny</button>
+            </div>*@
         <div>
 
             @*@for (NrImageInFor = 0; NrImageInFor < 5; NrImageInFor++)
-            {
-                <a @onclick="@NrImageEqualsNrFor">
-                    <img src="@pfotos[0].AddFolderImage("Pictures", pfotos[0].GarazId.ToString(), Image[NrImageInFor])" class="image-small-size" />
-                </a>
-            }*@
+                {
+                    <a @onclick="@NrImageEqualsNrFor">
+                        <img src="@pfotos[0].AddFolderImage("Pictures", pfotos[0].GarazId.ToString(), Image[NrImageInFor])" class="image-small-size" />
+                    </a>
+                }*@
 
         </div>
     </div>
-    <div>
-        <h3>@garages.Title</h3>
-        <h3>@garages.Id</h3>
+    <div class="EditChange">
+        <p>@garages.Title</p>
+        <p>@garages.Id</p>
+        <button @onclick="EditChange">Edit</button>
     </div>
-    <div>
+    <div class="EditChange">
+        @if (Edit)
+        {
+            <input placeholder="@garages.Title" @bind="garages.Title"/>
+            <button @onclick="PutGarage">Aktualizuj</button>
+            <p>Status aktuzalizowanych danych :@PutString</p>
+        }
+
+    </div>
+    <div style="clear:left">
+        
         <button type="submit" @onclick="Delete">Usuń obiekt</button>
-        <p>Status usuwanego obiektu:@status</p>
+        <a>Status usuwanego obiektu:@status</a>
 
     </div>
-
-
-
 }
 else
 {
@@ -57,6 +65,7 @@ else
     private int NrImageInFor { get; set; }
 
     private string status;
+    private bool Edit = false;
 
     //private void AddNrImage()
     //{
@@ -89,11 +98,34 @@ else
     {
         status = ApiGaraze.DeleteGarageModel(Id);
     }
+    private void EditChange()
+    {
+        if (!Edit)
+        {
+            Edit = true;
+        }
+        else
+        {
+            Edit = false;
+        }
+
+    }
+    private GarageModel PutGarageModel;
+    private string PutString;
+
+    private async void PutGarage()
+    {
+        PutString = ApiGaraze.PutGarageModel(Id,garages);
+
+
+        garages =await ApiGaraze.DowloandCorrectGarageModel(Id);
+    }
 
 
     protected override async Task OnInitializedAsync()
     {
         garages = await ApiGaraze.DowloandCorrectGarageModel(Id);
+
         //pfotos = await _dbGaraze.GetCorrectPfoto(Id);
 
         //if (pfotos != null)
